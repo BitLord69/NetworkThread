@@ -58,6 +58,7 @@ public class NetworkServer implements Runnable {
 
             String clientMsg = new String(clientRequest.getData(), 0, clientRequest.getLength());
             String[] msgParts = clientMsg.split("|");
+            System.out.println("message: " + msgParts);
             userList.put(new InetSocketAddress(clientRequest.getAddress(), PORT), msgParts[USERNAME]);
             userList.
                     entrySet().
