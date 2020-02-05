@@ -6,14 +6,13 @@ import java.util.concurrent.ConcurrentHashMap;
 public class NetworkServer implements Runnable {
     private static NetworkServer mInstance;
 
-    private static final String RECEIVED_MESSAGE = "Message received!";
+    private static final String RECEIVED_MESSAGE = "Server|Message received!";
 
     public static final int USERNAME = 0;
     public static final int MESSAGE = 1;
-
+    public final int MSG_SIZE = 512;
     public final int PORT = 80;
     private final int SLEEP_MS = 100;
-    private final int MSG_SIZE = 512;
     private DatagramSocket socket;
 
     ConcurrentHashMap<InetSocketAddress, String> userList = new ConcurrentHashMap<InetSocketAddress, String>();
