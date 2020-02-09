@@ -6,34 +6,41 @@ import java.util.concurrent.ConcurrentHashMap;
 public class NetworkServer implements Runnable {
     private static NetworkServer mInstance;
 
-    private static final String RECEIVED_MESSAGE = "Server|Message received!";
-
+    public final static String SPLIT_CHARACTER = "::";
     public static final int USERNAME = 0;
     public static final int MESSAGE = 1;
     public final int MSG_SIZE = 512;
     public final int PORT = 80;
-    private final int SLEEP_MS = 100;
-    private DatagramSocket socket;
 
-    ConcurrentHashMap<InetSocketAddress, String> userList = new ConcurrentHashMap<InetSocketAddress, String>();
+    private static final String RECEIVED_MESSAGE = "Server" + SPLIT_CHARACTER + "Message received!";
+
+    private final int SLEEP_MS = 100;
+
+    private DatagramSocket socket;
+    private ConcurrentHashMap<InetSocketAddress, String> userList = new ConcurrentHashMap<InetSocketAddress, String>();
 
     private boolean isRunning = true;
 
     private NetworkServer() {
+        System.out.println("I början på NetworkServers konstruktor...");
+
         try {
             socket = new DatagramSocket(PORT);
             socket.setSoTimeout(SLEEP_MS);
         } catch (SocketException e) {
-            System.out.println(e.getMessage());
+            System.out.println("NetworkServers konstruktor: " + e.getMessage());
         } // catch
+
+        System.out.println("I slutet på NetworkServers konstruktor...");
     } // NetworkServer
 
     public static NetworkServer get() {
         if (mInstance == null) {
+            System.out.println("I NetworkServer.get -> skapar instans!");
             mInstance = new NetworkServer();
         }
         return mInstance;
-    }
+    } // get
 
     public void sendMsgToClient(String msg, SocketAddress clientSocketAddress) {
         byte[] buffer = msg.getBytes();
@@ -44,8 +51,8 @@ public class NetworkServer implements Runnable {
             socket.send(response);
         } catch (Exception e) {
             e.printStackTrace();
-        }
-    }
+        } // catch
+    } // sendMsgToClient
 
     @Override
     public void run() {
@@ -57,16 +64,18 @@ public class NetworkServer implements Runnable {
             } // if !receiveMsgFromAnyClient...
 
             String clientMsg = new String(clientRequest.getData(), 0, clientRequest.getLength());
-            String[] msgParts = clientMsg.split("|");
-            System.out.println("message: " + msgParts);
-            userList.put(new InetSocketAddress(clientRequest.getAddress(), PORT), msgParts[USERNAME]);
-            userList.
-                    entrySet().
-                    stream().
-                    filter(e -> !((String)e.getValue()).equals(msgParts[USERNAME])).
-                    forEach(e -> sendMsgToClient(msgParts[MESSAGE], e.getKey()));
+            System.out.println("NetworkServer.run - Message received! '" + clientMsg + "'");
+
+            String[] msgParts = clientMsg.split(SPLIT_CHARACTER);
+
+//            userList.put(new InetSocketAddress(clientRequest.getAddress(), PORT), msgParts[USERNAME]);
+//            userList.
+//                    entrySet().
+//                    stream().
+//                    filter(e -> !((String)e.getValue()).equals(msgParts[USERNAME])).
+//                    forEach(e -> sendMsgToClient(msgParts[MESSAGE], e.getKey()));
+
             sendMsgToClient(RECEIVED_MESSAGE, new InetSocketAddress(clientRequest.getAddress(), PORT));
-            System.out.println(msgParts[MESSAGE]); // debugging purpose only!
             // TODO: Save the msg to a queue instead
         } // while...
     } // run

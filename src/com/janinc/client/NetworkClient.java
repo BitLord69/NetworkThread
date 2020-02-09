@@ -11,26 +11,26 @@ import java.util.function.Consumer;
 
 public class NetworkClient implements Runnable {
 
-    private final String SERVER_IP = "10.152.188.48";
+    private final String SERVER_IP = "127.0.0.1";
 
     private final int SLEEP_MS = 100;
 
     private DatagramSocket socket;
-    private InetAddress serverAddress;
-
-    public void setRunning(boolean running) {
-        isRunning = running;
-    }
-
     private boolean isRunning = true;
+    private InetAddress serverAddress;
     private List<Consumer> observers = new ArrayList<>();
+
     public NetworkClient(){
         try {
             serverAddress = InetAddress.getByName(SERVER_IP);
-
-            socket = new DatagramSocket(0);
+            socket = new DatagramSocket(null);
             socket.setSoTimeout(SLEEP_MS);
-        } catch(Exception e){ System.out.println(e.getMessage()); }
+            System.out.println("NetworkClients konstruktor, socker = " + socket);
+        } catch(Exception e){ System.out.println("NetworkCients konstruktor säger: " + e.getMessage()); }
+    } // NetworkClient
+
+    public void setRunning(boolean running) {
+        isRunning = running;
     }
     public void addObserver(Consumer consumer){
         observers.add(consumer);
@@ -41,14 +41,17 @@ public class NetworkClient implements Runnable {
     private void sendToObservers(String msg){
         for(Consumer c : observers){
             c.accept(msg);
-        }
-    }
+        } // for Consumer...
+    } // sendToObservers
 
     public void sendMsgToServer(String msg) {
+        System.out.println("NetworkClient.sendMessageToServer: " + msg);
         byte[] buffer = msg.getBytes();
         DatagramPacket request = new DatagramPacket(buffer, buffer.length, this.serverAddress, NetworkServer.get().PORT);
-        try { socket.send(request); } catch (Exception e) {}
-    }
+        try { socket.send(request); } catch (Exception e) {
+            System.out.println("NetworkClient.sendMsgToServer: " + e.getMessage());
+        } // catch
+    } // sendMsgToServer
 
     private void receiveMessageFromServer() {
         byte[] buffer = new byte[NetworkServer.get().MSG_SIZE];
@@ -57,19 +60,23 @@ public class NetworkClient implements Runnable {
         try {
             socket.receive(response);
             String serverMsg = new String(buffer, 0, response.getLength());
-            System.out.println(serverMsg); // debugging purpose only!
+            System.out.println("NetworkClient.receiveMessageFromServer -  Message from server: " + serverMsg); // debugging purpose only!
             sendToObservers(serverMsg);
             // TODO: Save the msg to a queue instead
         } catch (Exception ex) {
             try { Thread.sleep(SLEEP_MS); }
-            catch (Exception e) {}
-        }
-    }
+            catch (Exception e) {
+                System.out.println("receiveMessageFromServer: " + e.getMessage());
+            } // catch
+        } // catch
+    } // receiveMessageFromServer
 
     @Override
     public void run() {
         while (isRunning) {
             receiveMessageFromServer();
-        }
-    }
-}
+        } // while isRunning...
+
+        socket.close();
+    } // run
+} // class NetworkClient
