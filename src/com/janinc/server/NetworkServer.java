@@ -23,21 +23,16 @@ public class NetworkServer implements Runnable {
     private boolean isRunning = true;
 
     private NetworkServer() {
-        System.out.println("I början på NetworkServers konstruktor...");
-
         try {
             socket = new DatagramSocket(PORT);
             socket.setSoTimeout(SLEEP_MS);
         } catch (SocketException e) {
             System.out.println("NetworkServers konstruktor: " + e.getMessage());
         } // catch
-
-        System.out.println("I slutet på NetworkServers konstruktor...");
     } // NetworkServer
 
     public static NetworkServer get() {
         if (mInstance == null) {
-            System.out.println("I NetworkServer.get -> skapar instans!");
             mInstance = new NetworkServer();
         }
         return mInstance;
