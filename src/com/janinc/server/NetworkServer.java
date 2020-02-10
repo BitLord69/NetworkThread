@@ -18,7 +18,7 @@ public class NetworkServer implements Runnable {
     private final int SLEEP_MS = 100;
 
     private DatagramSocket socket;
-    private ConcurrentHashMap<InetSocketAddress, String> userList = new ConcurrentHashMap<InetSocketAddress, String>();
+    private ConcurrentHashMap<InetSocketAddress, String> userList = new ConcurrentHashMap<>();
 
     private boolean isRunning = true;
 

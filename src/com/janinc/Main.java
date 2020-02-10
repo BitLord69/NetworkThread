@@ -1,6 +1,4 @@
 package com.janinc;
-
-import com.janinc.client.Client;
 import com.janinc.server.NetworkServer;
 
 public class Main {
