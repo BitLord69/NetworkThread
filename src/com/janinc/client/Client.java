@@ -17,13 +17,11 @@ public class Client implements Runnable {
         nc.addObserver(this::msgReceived);
         Thread clientThread = new Thread(nc, "Network Client");
         clientThread.start();
-
-        System.out.println("ClientThread startad...");
     } // Client
 
     private void msgReceived(Object o) {
-        String s = (String) o;
-        System.out.println("Client says in msgReceived: " + s);
+        String[] msgParts = ((String) o).split(NetworkServer.SPLIT_CHARACTER);
+        System.out.println(String.format("%s says: %s", msgParts[NetworkServer.USERNAME], msgParts[NetworkServer.MESSAGE]));
     } // msgReceived
 
     @Override

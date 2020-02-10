@@ -25,7 +25,6 @@ public class NetworkClient implements Runnable {
             serverAddress = InetAddress.getByName(SERVER_IP);
             socket = new DatagramSocket(null);
             socket.setSoTimeout(SLEEP_MS);
-            System.out.println("NetworkClients konstruktor, socker = " + socket);
         } catch(Exception e){ System.out.println("NetworkCients konstruktor säger: " + e.getMessage()); }
     } // NetworkClient
 
@@ -45,7 +44,6 @@ public class NetworkClient implements Runnable {
     } // sendToObservers
 
     public void sendMsgToServer(String msg) {
-        System.out.println("NetworkClient.sendMessageToServer: " + msg);
         byte[] buffer = msg.getBytes();
         DatagramPacket request = new DatagramPacket(buffer, buffer.length, this.serverAddress, NetworkServer.PORT);
         try { socket.send(request); } catch (Exception e) {
@@ -60,7 +58,6 @@ public class NetworkClient implements Runnable {
         try {
             socket.receive(response);
             String serverMsg = new String(buffer, 0, response.getLength());
-            System.out.println("NetworkClient.receiveMessageFromServer -  Message from server: " + serverMsg); // debugging purpose only!
             sendToObservers(serverMsg);
             // TODO: Save the msg to a queue instead
         } catch (Exception ex) {
