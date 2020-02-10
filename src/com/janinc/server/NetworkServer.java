@@ -69,14 +69,14 @@ public class NetworkServer implements Runnable {
 
             String[] msgParts = clientMsg.split(SPLIT_CHARACTER);
 
-//            userList.put(new InetSocketAddress(clientRequest.getAddress(), PORT), msgParts[USERNAME]);
-//            userList.
-//                    entrySet().
-//                    stream().
-//                    filter(e -> !((String)e.getValue()).equals(msgParts[USERNAME])).
-//                    forEach(e -> sendMsgToClient(msgParts[MESSAGE], e.getKey()));
+            userList.put(new InetSocketAddress(clientRequest.getAddress(), clientRequest.getPort()), msgParts[USERNAME]);
+            userList.
+                    entrySet().
+                    stream().
+                    filter(e -> !e.getValue().equals(msgParts[USERNAME])).
+                    forEach(e -> sendMsgToClient(clientMsg, e.getKey()));
 
-            sendMsgToClient(RECEIVED_MESSAGE, new InetSocketAddress(clientRequest.getAddress(), PORT));
+            sendMsgToClient(RECEIVED_MESSAGE, new InetSocketAddress(clientRequest.getAddress(), clientRequest.getPort()));
             // TODO: Save the msg to a queue instead
         } // while...
     } // run
