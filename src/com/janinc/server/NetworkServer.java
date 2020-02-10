@@ -9,8 +9,8 @@ public class NetworkServer implements Runnable {
     public final static String SPLIT_CHARACTER = "::";
     public static final int USERNAME = 0;
     public static final int MESSAGE = 1;
-    public final int MSG_SIZE = 512;
-    public final int PORT = 80;
+    public final static int MSG_SIZE = 512;
+    public final static int PORT = 80;
 
     private static final String RECEIVED_MESSAGE = "Server" + SPLIT_CHARACTER + "Message received!";
 
@@ -46,7 +46,7 @@ public class NetworkServer implements Runnable {
         byte[] buffer = msg.getBytes();
 
         DatagramPacket response = new DatagramPacket(buffer, buffer.length, clientSocketAddress);
-
+        System.out.println("Meddelande skickat, spårutskrift" + clientSocketAddress);
         try {
             socket.send(response);
         } catch (Exception e) {
@@ -75,7 +75,7 @@ public class NetworkServer implements Runnable {
 //                    filter(e -> !((String)e.getValue()).equals(msgParts[USERNAME])).
 //                    forEach(e -> sendMsgToClient(msgParts[MESSAGE], e.getKey()));
 
-            sendMsgToClient(RECEIVED_MESSAGE, new InetSocketAddress(clientRequest.getAddress(), PORT));
+            sendMsgToClient(RECEIVED_MESSAGE, new InetSocketAddress(clientRequest.getAddress(), clientRequest.getPort()));
             // TODO: Save the msg to a queue instead
         } // while...
     } // run

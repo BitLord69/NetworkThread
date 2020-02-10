@@ -10,8 +10,8 @@ public class Main {
         Thread serverThread = new Thread(ns, "serverThread");
         serverThread.start();
 
-        Client c = new Client();
-        Thread inputThread = new Thread(c, "Network Client");
-        inputThread.start();
+ //       Client c = new Client();
+//       Thread inputThread = new Thread(c, "Network Client");
+//       inputThread.start();
     } // main
 } // class Main
