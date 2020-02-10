@@ -44,7 +44,7 @@ public class Client implements Runnable {
     } // run
     public static void main(String[] args){
         Client c = new Client();
-        Thread inputThread = new Thread(c, "Network Client");
+        Thread inputThread = new Thread(c, "Network Input");
         inputThread.start();
     } // main
 } // class Client

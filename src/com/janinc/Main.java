@@ -11,7 +11,7 @@ public class Main {
         serverThread.start();
 
  //       Client c = new Client();
-//       Thread inputThread = new Thread(c, "Network Client");
+//       Thread inputThread = new Thread(c, "Network Input");
 //       inputThread.start();
     } // main
 } // class Main

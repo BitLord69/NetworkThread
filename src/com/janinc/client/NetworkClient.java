@@ -11,7 +11,7 @@ import java.util.function.Consumer;
 
 public class NetworkClient implements Runnable {
 
-    private final String SERVER_IP = "127.0.0.1";
+    private final String SERVER_IP = "10.152.190.15";
 
     private final int SLEEP_MS = 100;
 
@@ -47,14 +47,14 @@ public class NetworkClient implements Runnable {
     public void sendMsgToServer(String msg) {
         System.out.println("NetworkClient.sendMessageToServer: " + msg);
         byte[] buffer = msg.getBytes();
-        DatagramPacket request = new DatagramPacket(buffer, buffer.length, this.serverAddress, NetworkServer.get().PORT);
+        DatagramPacket request = new DatagramPacket(buffer, buffer.length, this.serverAddress, NetworkServer.PORT);
         try { socket.send(request); } catch (Exception e) {
             System.out.println("NetworkClient.sendMsgToServer: " + e.getMessage());
         } // catch
     } // sendMsgToServer
 
     private void receiveMessageFromServer() {
-        byte[] buffer = new byte[NetworkServer.get().MSG_SIZE];
+        byte[] buffer = new byte[NetworkServer.MSG_SIZE];
         DatagramPacket response = new DatagramPacket(buffer, buffer.length);
 
         try {
